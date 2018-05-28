@@ -1,0 +1,44 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
+    
+    <!--配置mvc的自动扫包-->
+    <context:component-scan base-package="com.neuedu.controller"/>
+
+    <!--开启mvc的支持,配置了此标签，mvc会去主动加载一些类-->
+    <mvc:annotation-driven/>
+
+    <!--配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    
+    <!--配置静态资源文件的释放-->
+    <mvc:resources mapping="/r/**" location="/r/"/>
+    <mvc:resources mapping="/upload/**" location="/upload/"/>
+
+    <!--配置文件上传的支持-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="1048576"/>
+        <!--最大临时内存-->
+        <property name="maxInMemorySize" value="1048576"/>
+    </bean>
+
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <!--配置你的拦截器要拦截哪些请求-->
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/user/**"/>
+            <!--告诉spring拦截器的类是哪个-->
+            <bean class="com.neuedu.interceptor.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+</beans>
